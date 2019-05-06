@@ -145,7 +145,7 @@ Due to the importance of the Court's decisions on a very diverse set of politica
 
 Data comes from RStreet (found in "Data is Plural"), and consists of texts "of every Supreme Court confirmation hearing for which Senate Judiciary Committee transcripts are available (beginning in 1971 with hearings for Lewis Powell and William Rehnquist and concluding with Neil Gorsuch’s 2017 hearing)." Unfortunately, Brett Kavanaugh's hearing is not yet available. 
 
-With all these texts, I pre-processed the statements using a simple natural language processing tools, and classified them according to the speaker party membership (for the members of the Senate Judiciary Committe). Then I created counts using Python's dictionaries, transformed them to csv files, and made some plots using R's ggplot.
+With all these texts, I pre-processed the statements using a simple natural language processing tools, and classified them according to the speaker party membership (for the members of the Senate Judiciary Committee). Then I created counts using Python's dictionaries, transformed them to csv files, and made some plots using R's ggplot.
 
 ### Plot 1. Word Counts by Party and Nominee
 
