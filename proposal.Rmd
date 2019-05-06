@@ -194,16 +194,15 @@ ggplot(count_nominees, aes(x =Words, y = Count)) +
 
 ```
 
-### Length of the Hearings
+### Plot 2. Length of Interventions by Party and Nominee 
+
+#### On average, nominees' interventions have become more extended
 
 More extended hearings across time could suggest that nominations are more carefully reviewed, or that at least the members of the Committee pay more attention and spend more (political) resources in evaluating the candidates. As a preliminary hypothesis, one would expect that the more profound the disagreement around the nomination, the more substantial the differences in the length of interventions between parties. The reasons could be multiple, and the gap could be either way: if a nominee is from the same party as the member of the Committee, we could expect the number of observations and inquiries to be less as if the nominee is from a different party. But also members of the Committee could spend more time in interventions to defend his candidacy. In any case, these differences may reflect a disagreement inside the Committee. 
 
 Plot 2 shows the length of interventions by the partisan membership and for the nominee. The first noticeable thing to note is that the number of appointments with a Republican profile is much more significant than the Democrats', and it has to do with the rules to appoint a judge (the appointment is in practical terms a lifetime appointment). The shaded red/blue areas show this distinction. Second, we observe discrepancies in the length of the hearing by party: first, before 1987, Democrats used less time of the hearing (measured by the number of words used) to interview the Republican-appointed nominee candidate. Then until 2001, Democrats make more use of the time to question the nominee. After this year, the more recent appointments show a more or less equal length between Republicans and Democrats. Third, on average, the length of the nominee's intervention has increased since 1971, which may suggest that there is greater scrutiny from the Judicial Committee when evaluating, face to face, the candidates.
 
 
-### Plot 2. Length of Interventions by 
-
-#### There is high degree of consistency in the use of vocabulary among Republicans and Democrats
 
 ```{r chart2, echo=TRUE, warning=FALSE, message=FALSE, error=FALSE, results='hide'}
 lengths<-lengths[order(lengths$year),]
@@ -228,7 +227,7 @@ geom_line(aes(x=year, y=length_rep, color='Republican'), data = lengths, colour 
    annotate("label", x = 1988.8, y = 10000, label = "Nominee", family="Karla Bold", size=3, color="grey", fill="white") +
   ylab("Number of Words") +
   xlab("Year") +
-  ggtitle("Length of interventios during hearings by party") +
+  ggtitle(" Plot 2. Length of interventios during hearings by party") +
   labs(subtitle= "On average, hearings have become longer. Most recent nominations received \n around the same attention by both parties",
       caption="Source: RStreet https://www.rstreet.org ") 
 
