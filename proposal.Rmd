@@ -1,0 +1,238 @@
+---
+title: "Data Incubator Project Proposal"
+author: "Aleister Montfort"
+date: "5/5/2019"
+output: 
+  html_document:
+    css: style.css
+    code_folding: "hide"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r libraries1, message=FALSE, include=FALSE}
+library(ggplot2)
+library(here)
+library(zoo)
+#library(lubridate)
+library(dplyr)
+library(ggridges)
+```
+
+```{r colors, include=FALSE, warning=FALSE, message=FALSE, error=FALSE, results='hide'}
+## COLORS ####
+#Source of this and the palette function: https://drsimonj.svbtle.com/creating-corporate-colour-palettes-for-ggplot2
+
+ami_colors <- c(             # I will use these colors
+  `red`        = "#ff3333", 
+  `green`      = "#318333",
+  `blue`       = '#2171b5', 
+  `light_blue`   = '#eff3ff',
+  `orange`     = "#e19509",
+  `light grey` = "#f7f7f7",
+  `dark grey`  = "#808080",
+  `peach` = "#FF8C76",
+  `pink`= "#F082B3",
+  `green2`= "#6da786",
+  `green3` = "#4E7F35",
+  `blue2`= "#4C64E8",
+  `purple`= '#912FF7')
+
+ami_cols <- function(...) { # And create this function to have them ready without typying the HEX Code
+  cols <- c(...)
+  if (is.null(cols))
+    return (ami_colors)
+  ami_colors[cols]
+}
+
+## Palettes ####
+ami_palettes <- list(
+  `redish`  = ami_cols('red', 'orange'),
+
+  `cool`  = ami_cols('blue2', 'green2', "orange"),
+  
+  `multi`  = ami_cols('red', 'orange', 'green', 'blue', 'grey', 'dark grey'),
+
+  `grey_green`   = ami_cols("dark_grey", "green2"),
+
+  `blue_green` = ami_cols("blue", "green2"),
+
+  `red`  = ami_cols("red"),
+  `green_orange`  = ami_cols("green2", "orange"),
+  `purple_green2` = ami_cols("green2", "purple"),
+  `bluish` = ami_cols("blue", "blue2")
+  
+)
+
+## PALETTES####
+ami_pal <- function(palette = "cool", reverse = FALSE, ...) {
+  pal <- ami_palettes[[palette]]
+
+  if (reverse) pal <- rev(pal)
+
+  colorRampPalette(pal, ...)
+}
+
+scale_color_ami <- function(palette = "cool", discrete = TRUE, reverse = FALSE, ...) {
+
+  pal <- ami_pal(palette = palette, reverse = reverse)
+
+  if (discrete) {
+    discrete_scale("colour", paste0("ami_", palette), palette = pal, ...)
+  } else {
+    scale_color_gradientn(colours = pal(256), ...)
+  }
+}
+scale_fill_ami <- function(palette = "main", discrete = TRUE, reverse = FALSE, ...) {
+  pal <- ami_pal(palette = palette, reverse = reverse)
+
+  if (discrete) {
+    discrete_scale("fill", paste0("ami_", palette), palette = pal, ...)
+  } else {
+    scale_fill_gradient2(colours = pal(256), ...)
+  }
+}
+
+##THEMES ####
+theme_ami<-
+  theme(
+  panel.background = element_rect(fill = 'white',
+                                colour = "grey",
+                                size = 0.3, linetype = "solid"),
+  panel.grid.major = element_line(size = 0.3, linetype = 'solid',
+                                colour = ami_cols("light grey")), 
+  panel.grid.minor = element_line(size = 0.15, linetype = 'solid',
+                                colour = "dark grey")) +
+  theme(plot.title = element_text(size = 14, family = "Karla", face='bold', hjust=0))+
+  theme(plot.subtitle = element_text(size=12, family = "Karla", face = "plain",hjust=0))+
+    theme(text=element_text(family="Karla"))+
+     theme( axis.text.x=element_text(colour="black", family = "Karla", size = 10, face = "plain"))+
+    theme (axis.text.y=element_text(colour="black", family = "Karla", size = 10, face = "plain"))+
+        theme(legend.key=element_rect(fill="white", colour="white")) +
+  theme(plot.caption = element_text(family="Karla", size=7)) +
+  theme(text = element_text(family = "Karla")) +
+  theme(line = element_line(color=ami_cols("green"))) 
+  
+
+theme_amiplots<-
+ theme(plot.title = element_text(size = 16, family = "Karla", face='bold', hjust=.5)) +
+  theme(plot.subtitle = element_text(size=12, family = "Karla", face = "plain", hjust=0.5)) + 
+    theme(text=element_text(family="Karla")) +
+        theme(legend.key=element_rect(fill="white", colour="white")) +
+  theme(plot.caption = element_text(family="Karla", size=7))  +
+  theme(legend.title = element_text(face="bold")) +
+  theme(legend.background = element_rect()) +
+  theme(plot.title = element_text(hjust = 0.5)) +
+   theme(legend.background = element_rect(colour = '#00000000', fill = '#00000000'))
+```
+
+```{r palettes, echo=TRUE, warning=FALSE, message=FALSE, error=FALSE, results='hide'}
+
+```
+
+```{r themes, echo=TRUE}
+
+```
+
+## Project Proposal
+
+The recent nomination of judge Brett Kanavaugh to the Supreme Court of the United States was at the center of the public debate in the United States. While his critics argued that he did not have the credentials to become a judge, his supporters claimed he was a victim of false accusations. This case showed how relevant for the public a Supreme Court nomination could be, and to some extent also manifested the tensions in the partisan landscape in the US.
+
+Due to the importance of the Court's decisions on a very diverse set of political, economic and social outcomes, understanding how the nomination processes take place is in the general interest of the public, but also on the attention of many economic and social actors which scope of action is affected by the Court's decisions. This project aims to analyze the public hearings of the nominees to the Supreme Court of the United States by conducting a text analysis using natural language processing. The analysis tools could include a sentiment analysis; and semantic and topic clusterings using tools such as Latent Dirichlet Allocation or recurrent neural networks.
+
+Data comes from RStreet (found in "Data is Plural"), and consists of texts "of every Supreme Court confirmation hearing for which Senate Judiciary Committee transcripts are available (beginning in 1971 with hearings for Lewis Powell and William Rehnquist and concluding with Neil Gorsuch’s 2017 hearing)." Unfortunately, Brett Kavanaugh's hearing is not yet available. 
+
+With all these texts, I pre-processed the statements using a simple natural language processing tools, and classified them according to the speaker party membership (for the members of the Senate Judiciary Committe). Then I created counts using Python's dictionaries, transformed them to csv files, and made some plots using R's ggplot.
+
+### Plot 1. Word Counts by Party and Nominee
+
+#### There is high degree of consistency in the use of vocabulary among Republicans and Democrats
+
+With slight changes in the ranking of words counts, Democrats and Republicans use the same language when inquiring the nominees to the Supreme Court. This could suggest two things: first, the Committee members' profiles are relatively homogenous; second, nominees' hearings are a formal act in which the political elites of the United States have an agreement: both parties ask and inquire more or less about the same issues, although they had different ideological charges. The words used by the nominee also reflect this overlap with the Republican an Democrat members of the Committee. Perhaps the only notable exception is the word 'justice,' which shows up in the top-five among partisan members, but ranks  25th in the nominees' statements.
+
+```{r Data, echo=TRUE, warning=FALSE, message=FALSE, error=FALSE, results='hide'}
+count_democrats = read.csv("democrats.csv", header = TRUE)
+count_republicans = read.csv("republicans.csv", header = TRUE)
+count_nominees = read.csv("nominates.csv", header = TRUE)
+lengths = read.csv("lengths.csv", header = TRUE)
+
+
+
+```
+
+```{r Chart 1, echo=TRUE, warning=FALSE, message=FALSE, error=FALSE, results='hide'}
+order_dems<-count_democrats[order(-count_democrats$Count),]$Words
+ggplot(count_democrats, aes(x =Words, y = Count)) +
+    geom_point(color="#0015BC") + 
+    theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust=0.4)) +
+    scale_x_discrete(limits=order_dems) + theme_ami +
+  ggtitle("Top-20 most frequent words by Democrat members of the Senate  \n Judiciary Committee") +
+  labs(
+      caption="Source: RStreet https://www.rstreet.org ") 
+
+order_reps<-count_republicans[order(-count_republicans$Count),]$Words
+ggplot(count_republicans, aes(x =Words, y = Count)) +
+    geom_point(color="#DE0100") + 
+    theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust=0.4)) +
+    scale_x_discrete(limits=order_reps) + theme_ami +
+  ggtitle("Top-20 most frequent words by Republican members of the Senate \n Judiciary Committee") +
+  labs( 
+      caption="Source: RStreet https://www.rstreet.org ") 
+
+order_nominees<-count_nominees[order(-count_nominees$Count),]$Words
+ggplot(count_nominees, aes(x =Words, y = Count)) +
+    geom_point(color="dark grey") + 
+    theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust=0.4)) +
+    scale_x_discrete(limits=order_nominees) + theme_ami +
+  ggtitle("Top-20 most frequent words by Nominees to the Supreme Court") +
+  labs( 
+      caption="Source: RStreet https://www.rstreet.org ") 
+
+
+```
+
+### Length of the Hearings
+
+More extended hearings across time could suggest that nominations are more carefully reviewed, or that at least the members of the Committee pay more attention and spend more (political) resources in evaluating the candidates. As a preliminary hypothesis, one would expect that the more profound the disagreement around the nomination, the more substantial the differences in the length of interventions between parties. The reasons could be multiple, and the gap could be either way: if a nominee is from the same party as the member of the Committee, we could expect the number of observations and inquiries to be less as if the nominee is from a different party. But also members of the Committee could spend more time in interventions to defend his candidacy. In any case, these differences may reflect a disagreement inside the Committee. 
+
+Plot 2 shows the length of interventions by the partisan membership and for the nominee. The first noticeable thing to note is that the number of appointments with a Republican profile is much more significant than the Democrats', and it has to do with the rules to appoint a judge (the appointment is in practical terms a lifetime appointment). The shaded red/blue areas show this distinction. Second, we observe discrepancies in the length of the hearing by party: first, before 1987, Democrats used less time of the hearing (measured by the number of words used) to interview the Republican-appointed nominee candidate. Then until 2001, Democrats make more use of the time to question the nominee. After this year, the more recent appointments show a more or less equal length between Republicans and Democrats. Third, on average, the length of the nominee's intervention has increased since 1971, which may suggest that there is greater scrutiny from the Judicial Committee when evaluating, face to face, the candidates.
+
+
+### Plot 2. Length of Interventions by 
+
+#### There is high degree of consistency in the use of vocabulary among Republicans and Democrats
+
+```{r chart2, echo=TRUE, warning=FALSE, message=FALSE, error=FALSE, results='hide'}
+lengths<-lengths[order(lengths$year),]
+length_plot<-ggplot(lengths) + 
+geom_line(aes(x=year, y=length_rep, color='Republican'), data = lengths, colour = ("#DE0100")) +  
+  geom_point(aes(x=year, y=length_rep), data = lengths[which(lengths$party_nominee=="R"),], colour = ("#DE0100")) +
+  geom_line(aes(x=year, y=length_dem, color="Democrat"), data = lengths, colour = ("#0015BC")) + 
+  geom_point( aes(x=year, y=length_dem), data = lengths[which(lengths$party_nominee=="D"),], colour = "#0015BC") +
+  geom_line(aes(x=year, y=length_nominee, color="Nominee"), data = lengths, colour = ("grey"), size=1) +
+  annotate("rect", xmin = 1975, xmax = 1992, ymin = 0, ymax = 41000,
+           alpha = .1, fill ="#DE0100" ) +
+   annotate("rect", xmin = 1992, xmax = 1994, ymin = 0, ymax = 41000,
+           alpha = .1, fill ="#0015BC" ) +
+    annotate("rect", xmin = 1994, xmax = 2006, ymin = 0, ymax = 41000,
+           alpha = .1, fill ="#DE0100" ) +
+  annotate("rect", xmin = 2006, xmax = 2010, ymin = 0, ymax = 41000,
+           alpha = .1, fill ="#0015BC" ) +
+  annotate("rect", xmin = 2010, xmax = 2017, ymin = 0, ymax = 41000,
+           alpha = .1, fill ="#DE0100" ) + theme_ami +
+  annotate("label", x = 1982, y = 40000, label = "Republicans", family="Karla", size=3, color="#DE0100") +
+   annotate("label", x = 1994.5, y = 38000, label = "Democrats", family="Karla", size=3, color="#0015BC") +
+   annotate("label", x = 1988.8, y = 10000, label = "Nominee", family="Karla Bold", size=3, color="grey", fill="white") +
+  ylab("Number of Words") +
+  xlab("Year") +
+  ggtitle("Length of interventios during hearings by party") +
+  labs(subtitle= "On average, hearings have become longer. Most recent nominations received \n around the same attention by both parties",
+      caption="Source: RStreet https://www.rstreet.org ") 
+
+length_plot
+```
+
+Further steps in this project include conducting more descriptive statistics of the statements (i.e. discussion of particular principles; use of bigrams that may distinguish Republicans from Democrats), as well as develop an unsupervised model to extract topics.
